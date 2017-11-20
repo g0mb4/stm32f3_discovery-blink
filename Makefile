@@ -12,10 +12,7 @@ STMU = ST-LINK_CLI
 STMUFLAGS = -c SWD -Halt -ME -P $(PROJECT).bin 0x08000000 -V -Rst
 
 OPENOCD      = openocd
-OPENOCDFLAGS = -f ./debug/stm32f3-openocd.cfg \
-			  -c "reset halt" \
-			  -c "flash write_image erase $(PROJECT).hex" \
-			  -c "shutdown"
+OPENOCDFLAGS = -f ./openocd/stm32f3discovery.cfg
 
 GDB = $(TRGT)gdb
 
@@ -121,8 +118,8 @@ all: $(OBJS) $(PROJECT).elf $(PROJECT).hex $(PROJECT).bin
 upload: $(PROJECT).bin
 	$(STMU) $(STMUFLAGS)
 
-debug: $(PROJECT).elf $(PROJECT).hex
-	$(OPENOCD) $(OPENOCDFLAGS)
+debug: $(PROJECT).elf
+	$(OPENOCD) $(OPENOCDFLAGS) &
 	$(GDB) $(PROJECT).elf
 
 clean:
